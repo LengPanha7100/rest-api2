@@ -1,5 +1,6 @@
 package com.example.demospring.restapi2.service.serviceImp;
 
+import com.example.demospring.restapi2.exception.BadRequestException;
 import com.example.demospring.restapi2.model.Attendees;
 import com.example.demospring.restapi2.model.dto.AttendeesRequest;
 import com.example.demospring.restapi2.repository.AttendeesRepository;
@@ -17,13 +18,20 @@ public class AttendeesServiceImp implements AttendeesService {
     }
 
     @Override
-    public List<Attendees> getAllAttendees() {
-        return attendeesRepository.getAllAttendees();
+    public List<Attendees> getAllAttendees(Integer pageNo , Integer pageSize) {
+        if(pageNo <1){
+            throw new BadRequestException("Can't input the negative number ");
+        }
+        return attendeesRepository.getAllAttendees(pageNo,pageSize);
     }
 
     @Override
     public Attendees getAttendeesById(Long id) {
-        return attendeesRepository.getAttendeesById(id);
+        Attendees attendees = attendeesRepository.getAttendeesById(id);
+        if(attendees == null){
+            throw new BadRequestException("Attendees by id "+ id + "not found");
+        }
+        return attendees;
     }
 
     @Override
@@ -33,11 +41,19 @@ public class AttendeesServiceImp implements AttendeesService {
 
     @Override
     public Attendees updateAttendeesById(Long id, AttendeesRequest attendeesRequest) {
-        return attendeesRepository.updateAttendees(id,attendeesRequest);
+        Attendees attendees =attendeesRepository.updateAttendees(id,attendeesRequest);
+        if(attendees == null){
+            throw new BadRequestException("Attendees by id "+ id + "not found");
+        }
+        return attendees;
     }
 
     @Override
-    public void deleteAttendees(Long id) {
-       attendeesRepository.deleteAttendees(id);
+    public Attendees deleteAttendees(Long id) {
+       Attendees attendees = attendeesRepository.deleteAttendees(id);
+       if(attendees == null){
+          throw new BadRequestException("Attendees by id "+ id + "not found");
+       }
+       return attendees;
     }
 }

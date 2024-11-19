@@ -6,7 +6,7 @@ import com.example.demospring.restapi2.model.dto.EventsRequest;
 import java.util.List;
 
 public interface EventService {
-    List<Events> getAllEvents();
+    List<Events> getAllEvents(Integer pageNo , Integer pageSize);
 
     Events getEventsById(Long id);
 
@@ -14,5 +14,5 @@ public interface EventService {
 
     Events updateEvents(EventsRequest eventsRequest, Long id);
 
-    void deleteEvents(Long id);
+    Events deleteEvents(Long id);
 }

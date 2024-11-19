@@ -8,13 +8,16 @@ import java.util.List;
 @Mapper
 public interface AttendeesRepository {
     @Select("""
-    SELECT *FROM attendees_db;
+    SELECT *FROM attendees_db
+    LIMIT #{pageSize}
+    OFFSET #{pageSize} * (#{pageNo} - 1)
+    ;
     """)
     @Results(id = "attendeesId",value = {
             @Result(property = "attendeesId",column = "attendees_id"),
             @Result(property = "attendeesName",column = "attendees_name")
     })
-    List<Attendees> getAllAttendees();
+    List<Attendees> getAllAttendees(Integer pageNo , Integer pageSize);
     @Select("""
         INSERT INTO attendees_db(attendees_name, email)
         VALUES (#{attendees.attendeesName},#{attendees.email})
@@ -38,8 +41,8 @@ public interface AttendeesRepository {
     @ResultMap("attendeesId")
     Attendees updateAttendees(Long id,@Param("attendees") AttendeesRequest attendeesRequest);
 
-    @Delete("""
+    @Select("""
     DELETE FROM attendees_db where attendees_id = #{id};
     """)
-    void deleteAttendees(Long id);
+    Attendees deleteAttendees(Long id);
 }

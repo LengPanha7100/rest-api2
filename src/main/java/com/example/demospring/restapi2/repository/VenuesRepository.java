@@ -10,13 +10,15 @@ import java.util.List;
 public interface VenuesRepository {
     @Select(
     """
-    SELECT * FROM venues_db;
+    SELECT * FROM venues_db
+    LIMIT #{pageSize}
+    OFFSET #{pageSize} * (#{pageNo}-1)
     """
     )
     @Results(id = "venuesId",value = {
             @Result(property = "venuesName",column = "venues_name")
     })
-    List<Venues> getAllVenues();
+    List<Venues> getAllVenues(Integer pageNo , Integer pageSize);
 
     @Select(
     """
@@ -50,5 +52,5 @@ public interface VenuesRepository {
     @Select("""
     DELETE FROM venues_db WHERE id = #{id};
     """)
-    void deleteVenues(Long id);
+    Venues deleteVenues(Long id);
 }

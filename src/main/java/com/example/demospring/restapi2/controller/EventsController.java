@@ -1,10 +1,15 @@
 package com.example.demospring.restapi2.controller;
 
+import com.example.demospring.restapi2.model.APIResponse;
 import com.example.demospring.restapi2.model.Events;
 import com.example.demospring.restapi2.model.dto.EventsRequest;
 import com.example.demospring.restapi2.service.EventService;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -17,33 +22,64 @@ public class EventsController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllEvents (){
-        List<Events> eventsList = eventService.getAllEvents();
-        return ResponseEntity.ok(eventsList);
+    public ResponseEntity<APIResponse<List<Events>>> getAllEvents (@RequestParam (defaultValue = "1") Integer pageNo,
+                                                                   @RequestParam(defaultValue = "10") Integer pageSize){
+        List<Events> eventsList = eventService.getAllEvents(pageNo,pageSize);
+        APIResponse<List<Events>> apiResponse = APIResponse.<List<Events>>builder()
+                .message("Get all events successfully!")
+                .status(HttpStatus.OK)
+                .payload(eventsList)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEventsById (@PathVariable Long id){
+    public ResponseEntity<APIResponse<Events>> getEventsById (@PathVariable Long id){
         Events events = eventService.getEventsById(id);
-        return ResponseEntity.ok(events);
+        APIResponse<Events> apiResponse = APIResponse.<Events>builder()
+                .message("Get events by id successfully!")
+                .status(HttpStatus.OK)
+                .payload(events)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping
-    public ResponseEntity<?> createEvents(@RequestBody EventsRequest eventsRequest){
+    public ResponseEntity<APIResponse<Events>> createEvents(@RequestBody EventsRequest eventsRequest){
         Events events = eventService.createEvents(eventsRequest);
-        return ResponseEntity.ok(events);
+        APIResponse<Events> apiResponse = APIResponse.<Events>builder()
+                .message("Created attendees successfully!")
+                .status(HttpStatus.CREATED)
+                .payload(events)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEvents(@RequestBody EventsRequest eventsRequest,@PathVariable Long id ){
         Events events = eventService.updateEvents(eventsRequest,id);
-        return ResponseEntity.ok(events);
+        APIResponse<Events> apiResponse = APIResponse.<Events>builder()
+                .message("Updated attendees successfully!")
+                .status(HttpStatus.OK)
+                .payload(events)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEvents(@PathVariable Long id){
-        eventService.deleteEvents(id);
-        return ResponseEntity.ok("Deleted events by id successfully!");
+        Events events =eventService.deleteEvents(id);
+        APIResponse<Events> apiResponse = APIResponse.<Events>builder()
+                .message("Deleted attendees successfully!")
+                .status(HttpStatus.OK)
+                .payload(null)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

@@ -6,7 +6,7 @@ import com.example.demospring.restapi2.model.dto.VenuesRequest;
 import java.util.List;
 
 public interface VenuesService {
-    List<Venues> getAllVenues();
+    List<Venues> getAllVenues(Integer pageNo , Integer pageSize);
 
     Venues getVenuesById(Long id);
 
@@ -14,5 +14,5 @@ public interface VenuesService {
 
     Venues updateVenues(VenuesRequest venuesRequest, Long id);
 
-    void deleteVenues(Long id);
+    Venues deleteVenues(Long id);
 }

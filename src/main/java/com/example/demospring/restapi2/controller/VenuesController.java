@@ -20,8 +20,11 @@ public class VenuesController {
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse<List<Venues>>> getAllVenues (){
-        List<Venues> venuesList = venuesService.getAllVenues();
+    public ResponseEntity<APIResponse<List<Venues>>> getAllVenues (
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ){
+        List<Venues> venuesList = venuesService.getAllVenues(pageNo,pageSize);
         APIResponse<List<Venues>> apiResponse = APIResponse.<List<Venues>>builder()
                 .message("Get all venues successfully!")
                 .status(HttpStatus.OK)
@@ -31,26 +34,50 @@ public class VenuesController {
         return ResponseEntity.ok(apiResponse);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVenuesById(@PathVariable Long id){
+    public ResponseEntity<APIResponse<Venues>> getVenuesById(@PathVariable Long id){
         Venues venues = venuesService.getVenuesById(id);
-        return ResponseEntity.ok(venues);
+        APIResponse<Venues> venuesAPIResponse = APIResponse.<Venues>builder()
+                .message("Get venues by id is successfully!")
+                .status(HttpStatus.OK)
+                .payload(venues)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(venuesAPIResponse);
     }
 
     @PostMapping
-    public ResponseEntity<?> createVenues(@RequestBody VenuesRequest venuesRequest){
+    public ResponseEntity<APIResponse<Venues>> createVenues(@RequestBody VenuesRequest venuesRequest){
         Venues venues = venuesService.createVenues(venuesRequest);
-        return ResponseEntity.ok(venues);
+        APIResponse<Venues> venuesAPIResponse = APIResponse.<Venues>builder()
+                .message("Created venues successfully!")
+                .status(HttpStatus.CREATED)
+                .payload(venues)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(venuesAPIResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateVenues(@RequestBody VenuesRequest venuesRequest,@PathVariable Long id){
+    public ResponseEntity<APIResponse<Venues>> updateVenues(@RequestBody VenuesRequest venuesRequest,@PathVariable Long id){
         Venues venues = venuesService.updateVenues(venuesRequest,id);
-        return ResponseEntity.ok(venues);
+        APIResponse<Venues> venuesAPIResponse = APIResponse.<Venues>builder()
+                .message("Updated venues by id successfully!")
+                .status(HttpStatus.OK)
+                .payload(venues)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(venuesAPIResponse);
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<?> deleteVenues(@PathVariable Long id){
-        venuesService.deleteVenues(id);
-        return ResponseEntity.ok("Deleted venues by id successfully!");
+    public ResponseEntity<APIResponse<Venues>> deleteVenues(@PathVariable Long id){
+        Venues venues = venuesService.deleteVenues(id);
+        APIResponse<Venues> venuesAPIResponse = APIResponse.<Venues>builder()
+                .message("Updated venues by id successfully!")
+                .status(HttpStatus.OK)
+                .payload(null)
+                .dateTime(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(venuesAPIResponse);
     }
 }

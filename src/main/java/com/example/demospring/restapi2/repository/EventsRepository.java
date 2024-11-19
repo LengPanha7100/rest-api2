@@ -21,9 +21,12 @@ public interface EventsRepository {
             )
     })
     @Select("""
-    SELECT *FROM events_db;
+    SELECT *FROM events_db
+    LIMIT #{pageSize}
+    OFFSET #{pageSize} * (#{pageNo} - 1)
+    ;
     """)
-    List<Events> getAllEvents();
+    List<Events> getAllEvents(Integer pageNo , Integer pageSize);
 
     @Results(id = "attendeesId",value = {
             @Result(property = "attendeesId",column = "attendees_id"),
@@ -47,6 +50,7 @@ public interface EventsRepository {
     INSERT INTO event_attendees_db(event_id, attendees_id)
     VALUES (#{eventId},#{attendeesId})
     """)
+    @ResultMap("eventsId")
     void insertAttendeesIdAndEventId(Long eventId , Long attendeesId);
     @Select("""
     SELECT *FROM events_db WHERE event_id = #{id};
@@ -60,6 +64,7 @@ public interface EventsRepository {
     where event_id = #{id}
     returning *;
     """)
+    @ResultMap("eventsId")
     Events updateEvents(@Param("event") EventsRequest eventsRequest, Long id);
 
     @Delete("""
@@ -71,5 +76,5 @@ public interface EventsRepository {
     DELETE FROM events_db where
     event_id= #{id}
     """)
-    void deleteEvents(Long id);
+    Events deleteEvents(Long id);
 }

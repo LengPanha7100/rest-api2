@@ -1,5 +1,6 @@
 package com.example.demospring.restapi2.service.serviceImp;
 
+import com.example.demospring.restapi2.exception.BadRequestException;
 import com.example.demospring.restapi2.model.Events;
 import com.example.demospring.restapi2.model.dto.EventsRequest;
 import com.example.demospring.restapi2.repository.EventsRepository;
@@ -17,13 +18,17 @@ public class EventsServiceImp implements EventService {
     }
 
     @Override
-    public List<Events> getAllEvents() {
-        return eventsRepository.getAllEvents();
+    public List<Events> getAllEvents(Integer pageNo , Integer pageSize) {
+        return eventsRepository.getAllEvents(pageNo , pageSize);
     }
 
     @Override
     public Events getEventsById(Long id) {
-        return eventsRepository.getEventsById(id);
+        Events events = eventsRepository.getEventsById(id);
+        if(events == null){
+            throw new BadRequestException("Events by id " + id + " not found ");
+        }
+        return events;
     }
 
     @Override
@@ -39,15 +44,22 @@ public class EventsServiceImp implements EventService {
     @Override
     public Events updateEvents(EventsRequest eventsRequest, Long id) {
         Events events = eventsRepository.updateEvents(eventsRequest,id);
+        if(events == null){
+            throw new BadRequestException("Events by id " + id + " not found ");
+        }
         eventsRepository.deleteAllAttendeesIdByEventId(id);
         for(Long attendeesId : eventsRequest.getAttendeesId()){
             eventsRepository.insertAttendeesIdAndEventId(events.getEventId(),attendeesId);
         }
-        return eventsRepository.updateEvents(eventsRequest,id);
+        return events;
     }
 
     @Override
-    public void deleteEvents(Long id) {
-       eventsRepository.deleteEvents(id);
+    public Events deleteEvents(Long id) {
+       Events events = eventsRepository.deleteEvents(id);
+        if(events == null){
+            throw new BadRequestException("Events by id " + id + " not found ");
+        }
+        return events;
     }
 }

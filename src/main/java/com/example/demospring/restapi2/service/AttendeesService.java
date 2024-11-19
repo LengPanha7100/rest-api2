@@ -6,7 +6,7 @@ import com.example.demospring.restapi2.model.dto.AttendeesRequest;
 import java.util.List;
 
 public interface AttendeesService {
-    List<Attendees> getAllAttendees();
+    List<Attendees> getAllAttendees(Integer pageNo , Integer pageSize);
 
     Attendees getAttendeesById(Long id);
 
@@ -14,5 +14,5 @@ public interface AttendeesService {
 
     Attendees updateAttendeesById(Long id, AttendeesRequest attendeesRequest);
 
-    void deleteAttendees(Long id);
+    Attendees  deleteAttendees(Long id);
 }
