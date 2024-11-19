@@ -18,18 +18,18 @@ public class AttendeesServiceImp implements AttendeesService {
     }
 
     @Override
-    public List<Attendees> getAllAttendees(Integer pageNo , Integer pageSize) {
-        if(pageNo <1){
+    public List<Attendees> getAllAttendees(Integer pageNo, Integer pageSize) {
+        if (pageNo < 1) {
             throw new BadRequestException("Can't input the negative number ");
         }
-        return attendeesRepository.getAllAttendees(pageNo,pageSize);
+        return attendeesRepository.getAllAttendees(pageNo, pageSize);
     }
 
     @Override
     public Attendees getAttendeesById(Long id) {
         Attendees attendees = attendeesRepository.getAttendeesById(id);
-        if(attendees == null){
-            throw new BadRequestException("Attendees by id "+ id + "not found");
+        if (attendees == null) {
+            throw new BadRequestException("Attendees by id " + id + "not found");
         }
         return attendees;
     }
@@ -41,19 +41,19 @@ public class AttendeesServiceImp implements AttendeesService {
 
     @Override
     public Attendees updateAttendeesById(Long id, AttendeesRequest attendeesRequest) {
-        Attendees attendees =attendeesRepository.updateAttendees(id,attendeesRequest);
-        if(attendees == null){
-            throw new BadRequestException("Attendees by id "+ id + "not found");
+        Attendees attendees = attendeesRepository.updateAttendees(id, attendeesRequest);
+        if (attendees == null) {
+            throw new BadRequestException("Attendees by id " + id + "not found");
         }
         return attendees;
     }
 
     @Override
     public Attendees deleteAttendees(Long id) {
-       Attendees attendees = attendeesRepository.deleteAttendees(id);
-       if(attendees == null){
-          throw new BadRequestException("Attendees by id "+ id + "not found");
-       }
-       return attendees;
+        Attendees attendees = attendeesRepository.deleteAttendees(id);
+        if (attendees == null) {
+            throw new BadRequestException("Attendees by id " + id + "not found");
+        }
+        return attendees;
     }
 }

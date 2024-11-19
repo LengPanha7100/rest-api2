@@ -72,7 +72,7 @@ public interface EventsRepository {
     """)
     void deleteAllAttendeesIdByEventId(Long eventId);
 
-    @Delete("""
+    @Select("""
     DELETE FROM events_db where
     event_id= #{id}
     """)
