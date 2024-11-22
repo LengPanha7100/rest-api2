@@ -38,6 +38,10 @@ public interface EventsRepository {
     where event_id = #{eventId};
     """)
     List<Attendees> getAllAttendeesByEventId(Long eventId);
+
+    //1 . Create the events
+    //2 . Insert into event_attendees  and go to check the condition in eventServiceImp
+
     @Select("""
     INSERT INTO events_db (event_name, event_date, venues_id)
     VALUES (#{events.eventName},#{events.eventDate},#{events.venuesId})
@@ -52,11 +56,15 @@ public interface EventsRepository {
     """)
     @ResultMap("eventsId")
     void insertAttendeesIdAndEventId(Long eventId , Long attendeesId);
+
     @Select("""
     SELECT *FROM events_db WHERE event_id = #{id};
     """)
     @ResultMap("eventsId")
     Events getEventsById(Long id);
+
+
+    //1. delete attendees first after update events
 
     @Select("""
     UPDATE events_db
@@ -71,6 +79,8 @@ public interface EventsRepository {
     DELETE FROM event_attendees_db where event_id = #{eventId};
     """)
     void deleteAllAttendeesIdByEventId(Long eventId);
+
+
 
     @Select("""
     DELETE FROM events_db where

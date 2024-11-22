@@ -33,11 +33,13 @@ public class EventsServiceImp implements EventService {
 
     @Override
     public Events createEvents(EventsRequest eventsRequest) {
+        //get all the events but attendees is null So we loop attendees for to get the object
         Events events =  eventsRepository.createEvents(eventsRequest);
-
+        // check the condition for get object each
         for(Long attendeesId : eventsRequest.getAttendeesId()){
             eventsRepository.insertAttendeesIdAndEventId(events.getEventId(),attendeesId);
         }
+        //after you check all ready need to query the eventsById for show the object events
         return getEventsById(events.getEventId());
     }
 
@@ -47,11 +49,12 @@ public class EventsServiceImp implements EventService {
         if(events == null){
             throw new BadRequestException("Events by id " + id + " not found ");
         }
+        //need delete attendees first after update event
         eventsRepository.deleteAllAttendeesIdByEventId(id);
         for(Long attendeesId : eventsRequest.getAttendeesId()){
             eventsRepository.insertAttendeesIdAndEventId(events.getEventId(),attendeesId);
         }
-        return events;
+        return getEventsById(events.getEventId());
     }
 
     @Override
